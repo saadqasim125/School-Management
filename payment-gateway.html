@@ -153,10 +153,11 @@
       <button onclick="goToParentDashboard()" class="px-5 py-2.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-xs font-semibold">Return to Portal</button>
     </div>
   </div>
- <script src=db.js"></script>
+ <script src="db.js"></script>
   <script src="auth.js"></script>
   <script src="ui.js"></script>
   <script src="ai.js"></script>
+  <script>
     // URL Queries Parse
     const params = new URLSearchParams(window.location.search);
     const invoiceId = params.get('invoice');
