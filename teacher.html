@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard ERP - Teacher Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 dark-theme:bg-slate-950 dark-theme:text-slate-100 flex min-h-screen relative">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="glass-panel w-[260px] flex-shrink-0 flex flex-col justify-between border-r border-slate-200 dark:border-slate-800 transition-all duration-300 z-30">
+    <div>
+      <div class="p-6 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-500 flex items-center justify-center font-bold text-white">V</div>
+        <div class="sidebar-text">
+          <h1 class="text-sm font-extrabold tracking-wider bg-gradient-to-r from-cyan-500 to-emerald-500 bg-clip-text text-transparent">VANGUARD</h1>
+          <p class="text-[9px] uppercase tracking-widest text-slate-500">Teacher Workspace</p>
+        </div>
+      </div>
+      <nav class="p-4 space-y-1.5">
+        <button onclick="switchTab('attendance')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 active-nav-link text-slate-700 dark:text-slate-300">
+          <span>📅</span> <span class="sidebar-text">Mark Attendance</span>
+        </button>
+        <button onclick="switchTab('grading')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>📝</span> <span class="sidebar-text">Gradebook Entry</span>
+        </button>
+        <button onclick="switchTab('assignments')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>📚</span> <span class="sidebar-text">Assignments</span>
+        </button>
+        <button onclick="switchTab('announcements')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>📢</span> <span class="sidebar-text">Class Announcements</span>
+        </button>
+        <button onclick="switchTab('leaves')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>📝</span> <span class="sidebar-text">Leave Requests</span>
+        </button>
+        <button onclick="switchTab('messages')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>💬</span> <span class="sidebar-text">Parent Messaging</span>
+        </button>
+      </nav>
+    </div>
+    <!-- Staff profile footer -->
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-3 p-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/30">
+        <img id="user-avatar" class="w-9 h-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Profile">
+        <div class="sidebar-text flex-1 min-w-0">
+          <p id="user-name" class="text-xs font-bold truncate">Loading...</p>
+          <p class="text-[9px] uppercase tracking-wider text-slate-500">Instructor staff</p>
+        </div>
+        <button onclick="window.SchoolAuth.logout()" class="text-slate-400 hover:text-rose-500 text-sm">🚪</button>
+      </div>
+    </div>
+  </aside>
+  <!-- Workspace Main Content -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    <header class="glass-panel h-16 px-6 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 z-20">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()" class="text-lg p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">☰</button>
+        <h2 id="page-title" class="font-extrabold text-lg font-heading tracking-tight">Mark Student Attendance</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <button onclick="toggleAIPanel()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20">🤖 Ask AI</button>
+        <button onclick="window.SchoolUI.toggleTheme()" class="theme-toggle-btn w-9 h-9 rounded-lg glass-panel flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 text-lg">☀️</button>
+      </div>
+    </header>
+    <div id="content-views" class="p-6 space-y-6">
+      <!-- ================= ATTENDANCE TRACKING VIEW ================= -->
+      <section id="view-attendance" class="space-y-6 animate-fade-in">
+        <div class="flex flex-wrap gap-4 items-center bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1">Class</label>
+            <select id="attn-class" onchange="loadAttendanceList()" class="glass-input px-3 py-2 rounded-lg">
+              <option value="Grade 9">Grade 9</option>
+              <option value="Grade 10">Grade 10</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Date</label>
+            <input type="date" id="attn-date" onchange="loadAttendanceList()" class="glass-input px-3 py-2 rounded-lg">
+          </div>
+        </div>
+        <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                <th class="p-4 font-bold text-slate-500">Student ID</th>
+                <th class="p-4 font-bold text-slate-500">Name</th>
+                <th class="p-4 font-bold text-slate-500 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="attn-table-body">
+              <!-- Filled Dynamically -->
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="saveAttendance()" class="px-6 py-2.5 bg-indigo-500 text-white rounded-lg font-semibold text-xs hover:bg-indigo-600">Save Attendance Records</button>
+        </div>
+      </section>
+      <!-- ================= GRADING & MARKS VIEW ================= -->
+      <section id="view-grading" class="space-y-6 hidden animate-fade-in">
+        <div class="flex flex-wrap gap-4 items-center bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl text-xs">
+          <div>
+            <label class="block text-slate-400 mb-1">Select Class</label>
+            <select id="grade-class" onchange="loadGradebook()" class="glass-input px-3 py-2 rounded-lg">
+              <option value="Grade 9">Grade 9</option>
+              <option value="Grade 10">Grade 10</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Exam Type</label>
+            <select id="grade-exam" onchange="loadGradebook()" class="glass-input px-3 py-2 rounded-lg">
+              <option value="midTerm">Mid Term</option>
+              <option value="finalExam">Final Exam</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Subject</label>
+            <select id="grade-subj" onchange="loadGradebook()" class="glass-input px-3 py-2 rounded-lg">
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="English">English</option>
+              <option value="Biology">Biology</option>
+            </select>
+          </div>
+        </div>
+        <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                <th class="p-4 font-bold text-slate-500">Student ID</th>
+                <th class="p-4 font-bold text-slate-500">Name</th>
+                <th class="p-4 font-bold text-slate-500">Marks (out of 100)</th>
+              </tr>
+            </thead>
+            <tbody id="grade-table-body">
+              <!-- Loaded Dynamically -->
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="saveGrades()" class="px-6 py-2.5 bg-indigo-500 text-white rounded-lg font-semibold text-xs hover:bg-indigo-600">Save Grades</button>
+        </div>
+      </section>
+      <!-- ================= ASSIGNMENTS VIEW ================= -->
+      <section id="view-assignments" class="space-y-6 hidden animate-fade-in">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold font-heading text-base">Coursework Assignments</h3>
+          <button onclick="openAssignmentModal()" class="px-4 py-2 bg-indigo-500 text-white rounded-lg font-semibold text-xs hover:bg-indigo-600">+ Post Assignment</button>
+        </div>
+        
+        <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <div class="flex justify-between items-center text-xs font-bold text-slate-400 border-b border-slate-200 dark:border-slate-800 pb-2">
+            <span>Assignment Title</span>
+            <span>Class</span>
+            <span>Due Date</span>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center text-xs p-3 bg-slate-100/50 dark:bg-slate-800/20 rounded-lg">
+              <div>
+                <p class="font-bold text-slate-800 dark:text-slate-100">Math Quiz - Quadratic Functions</p>
+                <p class="text-[10px] text-slate-500">Solve exercises 4.1 to 4.4 from textbooks.</p>
+              </div>
+              <span class="px-2 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded">Grade 9</span>
+              <span class="font-mono text-slate-500">2026-06-30</span>
+            </div>
+            <div class="flex justify-between items-center text-xs p-3 bg-slate-100/50 dark:bg-slate-800/20 rounded-lg">
+              <div>
+                <p class="font-bold text-slate-800 dark:text-slate-100">Physics Lab Work - Pendulums</p>
+                <p class="text-[10px] text-slate-500">Verify length dependencies using pendulum lab graphs.</p>
+              </div>
+              <span class="px-2 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded">Grade 10</span>
+              <span class="font-mono text-slate-500">2026-07-02</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= PARENT MESSAGING VIEW ================= -->
+      <section id="view-messages" class="space-y-6 hidden animate-fade-in">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Parent roster -->
+          <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col gap-3">
+            <h4 class="font-bold text-sm mb-2 font-heading">Parent Contacts</h4>
+            <div id="parent-list" class="space-y-2 overflow-y-auto max-h-[300px]">
+              <!-- Loaded Dynamically -->
+            </div>
+          </div>
+          <!-- Chat panel -->
+          <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 lg:col-span-2 flex flex-col justify-between h-[400px]">
+            <div>
+              <h4 id="chat-header" class="font-bold text-sm mb-4 font-heading text-indigo-400">Select a contact to message</h4>
+              <div id="message-history" class="h-64 overflow-y-auto space-y-3 p-2 bg-slate-950/20 rounded-lg text-xs">
+                <!-- Loaded Dynamically -->
+              </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <input type="hidden" id="chat-receiver-id">
+              <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') sendMessage()" class="flex-1 glass-input px-3 py-2 rounded-xl text-xs" placeholder="Write message to parent...">
+              <button onclick="sendMessage()" class="px-4 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs font-semibold text-white">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= CLASS ANNOUNCEMENTS VIEW ================= -->
+      <section id="view-announcements" class="space-y-6 hidden animate-fade-in">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold font-heading text-base">Class Specific Announcements</h3>
+          <button onclick="openAnnounceModal()" class="px-4 py-2 bg-indigo-500 text-white rounded-lg font-semibold text-xs hover:bg-indigo-600">+ Add Announcement</button>
+        </div>
+        
+        <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <div id="announce-list-container" class="space-y-3">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </section>
+      <!-- ================= LEAVE REQUESTS VIEW ================= -->
+      <section id="view-leaves" class="space-y-6 hidden animate-fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 h-fit">
+            <h4 class="font-bold text-sm mb-4 font-heading border-b border-slate-200 dark:border-slate-800 pb-2">Submit Leave Application</h4>
+            <form onsubmit="handleLeaveSubmit(event)" class="space-y-4 text-xs">
+              <div>
+                <label class="block text-slate-400 mb-1">Start Date</label>
+                <input type="date" id="leave-start" required class="w-full glass-input px-3 py-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">End Date</label>
+                <input type="date" id="leave-end" required class="w-full glass-input px-3 py-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Reason for Leave</label>
+                <textarea id="leave-reason" required rows="3" class="w-full glass-input px-3 py-2 rounded-lg" placeholder="Description..."></textarea>
+              </div>
+              <button type="submit" class="w-full py-2.5 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600">Disperse Application</button>
+            </form>
+          </div>
+          
+          <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 md:col-span-2">
+            <h4 class="font-bold text-sm mb-4 font-heading border-b border-slate-200 dark:border-slate-800 pb-2">My Leave Requests Status</h4>
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                  <th class="p-3 font-semibold text-slate-500">Period Dates</th>
+                  <th class="p-3 font-semibold text-slate-500">Reason</th>
+                  <th class="p-3 font-semibold text-slate-500 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="leaves-table-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <!-- ================= AI ASSISTANT OVERLAY PANEL ================= -->
+  <div id="ai-panel" class="fixed right-5 bottom-20 z-40 w-80 glass-panel p-5 rounded-2xl shadow-2xl border border-indigo-500/20 flex flex-col justify-between hidden h-[380px]">
+    <div>
+      <div class="flex justify-between items-center mb-3">
+        <h4 class="font-bold font-heading text-sm text-indigo-400 flex items-center gap-1.5">🤖 AI Workspace Assistant</h4>
+        <button onclick="toggleAIPanel()" class="text-slate-400 hover:text-slate-200">&times;</button>
+      </div>
+      <div id="ai-chat-box" class="h-60 overflow-y-auto p-2 bg-slate-950/20 rounded-lg text-xs space-y-2.5">
+        <div class="text-slate-400">Welcome, Instructor! Ask me details like "Find class 9 students", or "Generate attendance report".</div>
+      </div>
+    </div>
+    <div class="flex gap-1.5 mt-2">
+      <input type="text" id="ai-chat-input" onkeydown="if(event.key==='Enter') sendAIQuery()" class="flex-1 glass-input px-3 py-2 rounded-xl text-xs" placeholder="Ask school query...">
+      <button onclick="sendAIQuery()" class="px-3 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs text-white">Ask</button>
+    </div>
+  </div>
+  <!-- ================= ASSIGNMENT MODAL ================= -->
+  <div id="assignment-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden">
+    <div class="glass-panel w-full max-w-md p-6 rounded-2xl relative mx-4 shadow-2xl">
+      <button onclick="closeAssignmentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-200 text-2xl font-bold">&times;</button>
+      <h3 class="text-lg font-bold font-heading text-indigo-400 mb-4">Post Coursework Assignment</h3>
+      <form onsubmit="handleAssignmentSubmit(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1">Target Class</label>
+          <select id="asgn-class" class="w-full glass-input px-3 py-2 rounded-lg">
+            <option value="Grade 9">Grade 9</option>
+            <option value="Grade 10">Grade 10</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Assignment Title</label>
+          <input type="text" id="asgn-title" required class="w-full glass-input px-3 py-2 rounded-lg">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Description / Task Instructions</label>
+          <textarea id="asgn-desc" required rows="3" class="w-full glass-input px-3 py-2 rounded-lg"></textarea>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Due Date</label>
+          <input type="date" id="asgn-due" required class="w-full glass-input px-3 py-2 rounded-lg">
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600">Publish Homework</button>
+      </form>
+    </div>
+  </div>
+  <!-- Scripts -->
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/ai.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    // Validate session
+    const currentUser = window.SchoolAuth.requireUser(['teacher']);
+    // Sidebar Toggling
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('w-[260px]');
+      sidebar.classList.toggle('w-16');
+      document.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden'));
+    }
+    // Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('#content-views > section').forEach(sect => sect.classList.add('hidden'));
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav-link'));
+      event.currentTarget.classList.add('active-nav-link');
+      const titles = {
+        attendance: 'Mark Student Attendance',
+        grading: 'Gradebook & Examination Entry',
+        assignments: 'Assignments & Coursework',
+        messages: 'Parent Messaging Center'
+      };
+      document.getElementById('page-title').innerText = titles[tabId] || 'Workspace';
+      if (tabId === 'attendance') {
+        loadAttendanceList();
+      } else if (tabId === 'grading') {
+        loadGradebook();
+      } else if (tabId === 'messages') {
+        loadParentMessaging();
+      }
+    }
+    // ================= ATTENDANCE SYSTEM =================
+    function loadAttendanceList() {
+      const db = window.SchoolDB.get();
+      const cls = document.getElementById('attn-class').value;
+      const dateVal = document.getElementById('attn-date').value || new Date().toISOString().split('T')[0];
+      document.getElementById('attn-date').value = dateVal;
+      const tbody = document.getElementById('attn-table-body');
+      tbody.innerHTML = '';
+      const students = db.students.filter(s => s.class === cls);
+      if (students.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-400">No students registered in ${cls}</td></tr>`;
+        return;
+      }
+      students.forEach(s => {
+        const record = s.attendance.find(a => a.date === dateVal);
+        const status = record ? record.status : 'Present';
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/40';
+        tr.innerHTML = `
+          <td class="p-4 font-mono font-bold text-indigo-400">${s.id}</td>
+          <td class="p-4 font-semibold">${s.name}</td>
+          <td class="p-4 text-center">
+            <div class="flex justify-center gap-4 text-xs font-semibold">
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="attn-${s.id}" value="Present" ${status === 'Present' ? 'checked' : ''} class="text-emerald-500">
+                <span class="text-emerald-500">Present</span>
+              </label>
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="attn-${s.id}" value="Absent" ${status === 'Absent' ? 'checked' : ''} class="text-rose-500">
+                <span class="text-rose-500">Absent</span>
+              </label>
+              <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="attn-${s.id}" value="Leave" ${status === 'Leave' ? 'checked' : ''} class="text-amber-500">
+                <span class="text-amber-500">Leave</span>
+              </label>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    function saveAttendance() {
+      const db = window.SchoolDB.get();
+      const cls = document.getElementById('attn-class').value;
+      const dateVal = document.getElementById('attn-date').value;
+      const students = db.students.filter(s => s.class === cls);
+      students.forEach(s => {
+        const checkedVal = document.querySelector(`input[name="attn-${s.id}"]:checked`).value;
+        const index = s.attendance.findIndex(a => a.date === dateVal);
+        if (index > -1) {
+          s.attendance[index].status = checkedVal;
+        } else {
+          s.attendance.push({ date: dateVal, status: checkedVal });
+        }
+      });
+      window.SchoolDB.save(db);
+      window.SchoolUI.showToast(`Attendance logs saved for ${cls} on ${dateVal}`);
+    }
+    // ================= GRADEBOOK GRADING SYSTEM =================
+    function loadGradebook() {
+      const db = window.SchoolDB.get();
+      const cls = document.getElementById('grade-class').value;
+      const exam = document.getElementById('grade-exam').value;
+      const subj = document.getElementById('grade-subj').value;
+      const tbody = document.getElementById('grade-table-body');
+      tbody.innerHTML = '';
+      const students = db.students.filter(s => s.class === cls);
+      if (students.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-400">No students registered in ${cls}</td></tr>`;
+        return;
+      }
+      students.forEach(s => {
+        const marks = (s.grades[exam] && s.grades[exam][subj] !== undefined) ? s.grades[exam][subj] : '';
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-200 dark:border-slate-800';
+        tr.innerHTML = `
+          <td class="p-4 font-mono font-semibold text-indigo-400">${s.id}</td>
+          <td class="p-4 font-semibold">${s.name}</td>
+          <td class="p-4">
+            <input type="number" min="0" max="100" id="marks-${s.id}" value="${marks}" class="glass-input px-3 py-1.5 rounded-lg text-xs w-24" placeholder="Marks">
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    function saveGrades() {
+      const db = window.SchoolDB.get();
+      const cls = document.getElementById('grade-class').value;
+      const exam = document.getElementById('grade-exam').value;
+      const subj = document.getElementById('grade-subj').value;
+      const students = db.students.filter(s => s.class === cls);
+      students.forEach(s => {
+        const inputVal = document.getElementById(`marks-${s.id}`).value;
+        if (!s.grades[exam]) s.grades[exam] = {};
+        s.grades[exam][subj] = inputVal !== '' ? parseInt(inputVal) : 0;
+      });
+      window.SchoolDB.save(db);
+      window.SchoolUI.showToast(`Exam grades recorded for ${subj} (${exam})`);
+    }
+    // ================= ASSIGNMENTS SYSTEM =================
+    function openAssignmentModal() {
+      document.getElementById('assignment-modal').classList.remove('hidden');
+    }
+    function closeAssignmentModal() {
+      document.getElementById('assignment-modal').classList.add('hidden');
+    }
+    function handleAssignmentSubmit(e) {
+      e.preventDefault();
+      window.SchoolUI.showToast('Homework assignment published successfully!');
+      closeAssignmentModal();
+    }
+    // ================= MESSAGING CENTER SYSTEM =================
+    function loadParentMessaging() {
+      const db = window.SchoolDB.get();
+      const list = document.getElementById('parent-list');
+      list.innerHTML = '';
+      const parents = db.users.filter(u => u.role === 'parent');
+      parents.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'p-3 bg-slate-100/50 dark:bg-slate-900/30 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl cursor-pointer transition-colors';
+        item.onclick = () => selectParentChat(p.id, p.name);
+        item.innerHTML = `
+          <p class="font-bold text-xs">${p.name}</p>
+          <p class="text-[9px] text-slate-500">Portal User ID: ${p.id}</p>
+        `;
+        list.appendChild(item);
+      });
+    }
+    function selectParentChat(parentId, parentName) {
+      document.getElementById('chat-receiver-id').value = parentId;
+      document.getElementById('chat-header').innerText = `Messaging: ${parentName}`;
+      renderMessagesHistory(parentId);
+    }
+    function renderMessagesHistory(parentId) {
+      const db = window.SchoolDB.get();
+      const chatBox = document.getElementById('message-history');
+      chatBox.innerHTML = '';
+      const dialogue = db.messages.filter(m => 
+        (m.senderId === currentUser.id && m.receiverId === parentId) ||
+        (m.senderId === parentId && m.receiverId === currentUser.id)
+      ).sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+      if (dialogue.length === 0) {
+        chatBox.innerHTML = '<div class="text-center text-slate-400 p-4">No message history. Write a message below to start chatting.</div>';
+        return;
+      }
+      dialogue.forEach(m => {
+        const isMe = m.senderId === currentUser.id;
+        const msg = document.createElement('div');
+        msg.className = `flex flex-col max-w-[80%] p-2.5 rounded-xl text-xs leading-relaxed ${
+          isMe ? 'bg-indigo-500 text-white self-end ml-auto' : 'bg-slate-100/80 dark:bg-slate-800 text-slate-800 dark:text-slate-100'
+        }`;
+        msg.innerHTML = `
+          <p>${m.content}</p>
+          <span class="text-[8px] opacity-75 text-right mt-1">${new Date(m.timestamp).toLocaleTimeString()}</span>
+        `;
+        chatBox.appendChild(msg);
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    function sendMessage() {
+      const receiverId = document.getElementById('chat-receiver-id').value;
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!receiverId) {
+        alert('Please select a parent contact first.');
+        return;
+      }
+      if (!text) return;
+      const db = window.SchoolDB.get();
+      const newMsg = {
+        id: db.messages.length + 1,
+        senderId: currentUser.id,
+        receiverId: receiverId,
+        content: text,
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+      db.messages.push(newMsg);
+      window.SchoolDB.save(db);
+      
+      input.value = '';
+      renderMessagesHistory(receiverId);
+    }
+    // ================= AI ASSISTANT CONSOLE =================
+    function toggleAIPanel() {
+      document.getElementById('ai-panel').classList.toggle('hidden');
+    }
+    function sendAIQuery() {
+      const input = document.getElementById('ai-chat-input');
+      const query = input.value.trim();
+      if (!query) return;
+      const chatBox = document.getElementById('ai-chat-box');
+      chatBox.innerHTML += `<div class="text-right text-indigo-400 font-bold mt-2">You: ${query}</div>`;
+      
+      const answer = window.SchoolUI.parseAICommand(query);
+      chatBox.innerHTML += `<div class="text-left text-slate-300 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800 mt-1.5">🤖: ${answer}</div>`;
+      
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('user-name').innerText = currentUser.name;
+      document.getElementById('user-avatar').src = currentUser.photo;
+      loadAttendanceList();
+    });
+  </script>
+</body>
+</html>
