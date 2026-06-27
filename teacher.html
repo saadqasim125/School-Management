@@ -273,7 +273,55 @@
       </form>
     </div>
   </div>
-  <!-- Scripts -->
+  <!-- Announcement Modal -->
+<div id="announcement-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center hidden z-50">
+    <div class="glass-panel w-full max-w-lg p-6 rounded-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold">New Announcement</h3>
+            <button onclick="closeAnnounceModal()" class="text-2xl">&times;</button>
+        </div>
+
+        <form onsubmit="handleAnnouncementSubmit(event)">
+            <div class="space-y-4">
+
+                <div>
+                    <label class="block mb-1 text-sm">Class</label>
+                    <select id="announce-class" class="glass-input w-full px-3 py-2 rounded-lg">
+                        <option>Grade 9</option>
+                        <option>Grade 10</option>
+                        <option>All Classes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block mb-1 text-sm">Title</label>
+                    <input
+                        type="text"
+                        id="announce-title"
+                        required
+                        class="glass-input w-full px-3 py-2 rounded-lg">
+                </div>
+
+                <div>
+                    <label class="block mb-1 text-sm">Message</label>
+                    <textarea
+                        id="announce-message"
+                        rows="5"
+                        required
+                        class="glass-input w-full px-3 py-2 rounded-lg"></textarea>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-indigo-600 text-white py-2 rounded-lg">
+                    Publish Announcement
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
+      <!-- Scripts -->
   <script src="db.js"></script>
   <script src="auth.js"></script>
   <script src="ai.js"></script>
