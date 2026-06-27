@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard ERP - Parent Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 dark-theme:bg-slate-950 dark-theme:text-slate-100 flex min-h-screen relative">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="glass-panel w-[260px] flex-shrink-0 flex flex-col justify-between border-r border-slate-200 dark:border-slate-800 transition-all duration-300 z-30">
+    <div>
+      <div class="p-6 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-amber-500 flex items-center justify-center font-bold text-white">V</div>
+        <div class="sidebar-text">
+          <h1 class="text-sm font-extrabold tracking-wider bg-gradient-to-r from-emerald-500 to-amber-500 bg-clip-text text-transparent">VANGUARD</h1>
+          <p class="text-[9px] uppercase tracking-widest text-slate-500">Parent Portal</p>
+        </div>
+      </div>
+      <nav class="p-4 space-y-1.5">
+        <button onclick="switchTab('children')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 active-nav-link text-slate-700 dark:text-slate-300">
+          <span>👶</span> <span class="sidebar-text">Child Profile</span>
+        </button>
+        <button onclick="switchTab('performance')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>📈</span> <span class="sidebar-text">Grades & GPA</span>
+        </button>
+        <button onclick="switchTab('fees')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>💳</span> <span class="sidebar-text">Fees & Invoices</span>
+        </button>
+        <button onclick="switchTab('communication')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>💬</span> <span class="sidebar-text">Teacher Messaging</span>
+        </button>
+        <button onclick="switchTab('complaints')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>⚠️</span> <span class="sidebar-text">Complaints System</span>
+        </button>
+      </nav>
+    </div>
+    <!-- Parent Profile Footer -->
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-3 p-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/30">
+        <div class="w-9 h-9 rounded-full bg-slate-300 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-800 dark:text-slate-200">P</div>
+        <div class="sidebar-text flex-1 min-w-0">
+          <p id="user-name" class="text-xs font-bold truncate">Loading...</p>
+          <p class="text-[9px] uppercase tracking-wider text-slate-500">Guardian User</p>
+        </div>
+        <button onclick="window.SchoolAuth.logout()" class="text-slate-400 hover:text-rose-500 text-sm">🚪</button>
+      </div>
+    </div>
+  </aside>
+  <!-- Workspace Main Content -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    <header class="glass-panel h-16 px-6 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 z-20">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()" class="text-lg p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">☰</button>
+        <h2 id="page-title" class="font-extrabold text-lg font-heading tracking-tight">Child Performance Card</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-xs font-semibold text-indigo-400">Child:</span>
+        <select id="child-selector" onchange="loadChildRecords()" class="glass-input text-xs px-2.5 py-1.5 rounded-lg">
+          <!-- Loaded Dynamically -->
+        </select>
+        <button onclick="toggleAIPanel()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20">🤖 Ask AI</button>
+        <button onclick="window.SchoolUI.toggleTheme()" class="theme-toggle-btn w-9 h-9 rounded-lg glass-panel flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 text-lg">☀️</button>
+      </div>
+    </header>
+    <div id="content-views" class="p-6 space-y-6">
+      <!-- ================= CHILD PROFILE CARD VIEW ================= -->
+      <section id="view-children" class="space-y-6 animate-fade-in">
+        <div class="glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row gap-6 items-center">
+          <img id="child-photo" class="w-32 h-32 rounded-2xl object-cover border-2 border-indigo-500 shadow-lg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150">
+          <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Student ID</p>
+              <p id="child-id" class="font-mono font-bold text-indigo-400 text-sm">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Academic Class</p>
+              <p id="child-class" class="font-bold text-sm">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Roll Number</p>
+              <p id="child-roll" class="font-bold text-sm">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Form B / CNIC</p>
+              <p id="child-cnic" class="font-semibold">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Blood Group</p>
+              <p id="child-blood" class="font-bold">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">House</p>
+              <p id="child-house" class="font-bold text-emerald-400">--</p>
+            </div>
+            <div class="sm:col-span-2">
+              <p class="text-slate-400 font-semibold mb-0.5">Address</p>
+              <p id="child-address" class="text-slate-600 dark:text-slate-300">--</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- QR ID Card Section -->
+        <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-sm mx-auto text-center relative overflow-hidden id-card-glow text-white">
+          <h4 class="font-bold text-sm font-heading mb-4 tracking-wider">VANGUARD STUDENT ID BADGE</h4>
+          <div class="flex justify-center mb-4">
+            <canvas id="qr-canvas" width="120" height="120" class="rounded bg-white p-2 border border-indigo-500/40"></canvas>
+          </div>
+          <p id="id-card-name" class="font-bold text-base tracking-wide">--</p>
+          <p id="id-card-class" class="text-[10px] text-indigo-200 mt-0.5 uppercase tracking-widest font-semibold">--</p>
+          <div class="mt-4 pt-3 border-t border-white/10 flex justify-between text-[9px] text-slate-300">
+            <span>Issue Date: 2026-06-27</span>
+            <span>Validity: Academic Term</span>
+          </div>
+        </div>
+      </section>
+      <!-- ================= PERFORMANCE MARKS & ATTENDANCE ================= -->
+      <section id="view-performance" class="space-y-6 hidden animate-fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-panel p-5 rounded-2xl md:col-span-2 border border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-sm mb-4 font-heading text-indigo-400">Term Grades</h4>
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                  <th class="p-3 font-semibold text-slate-500">Subject</th>
+                  <th class="p-3 font-semibold text-slate-500 text-center">Mid Term</th>
+                  <th class="p-3 font-semibold text-slate-500 text-center">Final Exam</th>
+                </tr>
+              </thead>
+              <tbody id="grades-table-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between text-xs font-semibold">
+              <span>Calculated CGPA: <span id="performance-gpa" class="text-indigo-400">--</span></span>
+              <span>Estimated Position: <span id="performance-pos" class="text-emerald-400">1st</span></span>
+            </div>
+          </div>
+          
+          <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-sm mb-4 font-heading text-indigo-400">Attendance Log</h4>
+            <div id="attendance-log-container" class="space-y-2 overflow-y-auto max-h-[220px]">
+              <!-- Loaded Dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= FEES & BILLING INVOICES ================= -->
+      <section id="view-fees" class="space-y-6 hidden animate-fade-in">
+        <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                <th class="p-4 font-semibold text-slate-500">Invoice ID</th>
+                <th class="p-4 font-semibold text-slate-500">Statement Month</th>
+                <th class="p-4 font-semibold text-slate-500">Billing Amount</th>
+                <th class="p-4 font-semibold text-slate-500 text-center">Payment Status</th>
+                <th class="p-4 font-semibold text-slate-500">Action</th>
+              </tr>
+            </thead>
+            <tbody id="fees-table-body">
+              <!-- Loaded Dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <!-- ================= TEACHER MESSAGING ================= -->
+      <section id="view-communication" class="space-y-6 hidden animate-fade-in">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-sm mb-4 font-heading">Designated Teachers</h4>
+            <div id="teachers-list" class="space-y-2">
+              <!-- Loaded Dynamically -->
+            </div>
+          </div>
+          
+          <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 lg:col-span-2 flex flex-col justify-between h-[400px]">
+            <div>
+              <h4 id="chat-header" class="font-bold text-sm mb-4 font-heading text-indigo-400">Select teacher from side list</h4>
+              <div id="chat-box" class="h-64 overflow-y-auto space-y-3 p-3 bg-slate-950/20 rounded-lg text-xs">
+                <!-- Loaded Dynamically -->
+              </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <input type="hidden" id="chat-receiver-id">
+              <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') sendMessage()" class="flex-1 glass-input px-3 py-2 rounded-xl text-xs" placeholder="Message text...">
+              <button onclick="sendMessage()" class="px-4 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs font-semibold text-white">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= COMPLAINT SUBMISSION SYSTEM ================= -->
+      <section id="view-complaints" class="space-y-6 hidden animate-fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-sm mb-4 font-heading border-b border-slate-200 dark:border-slate-800 pb-2">Submit Complaint Ticket</h4>
+            <form onsubmit="handleComplaintSubmit(event)" class="space-y-4 text-xs">
+              <div>
+                <label class="block text-slate-400 mb-1">Subject</label>
+                <input type="text" id="complaint-subject" required class="w-full glass-input px-3 py-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Complaint details</label>
+                <textarea id="complaint-details" required rows="4" class="w-full glass-input px-3 py-2 rounded-lg" placeholder="Please describe the locker, transport, behavior, or billing issue in detail..."></textarea>
+              </div>
+              <button type="submit" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-semibold transition-colors">Submit Ticket</button>
+            </form>
+          </div>
+          <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-sm mb-4 font-heading border-b border-slate-200 dark:border-slate-800 pb-2">Logged Tickets</h4>
+            <div id="complaints-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+              <!-- Loaded Dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <!-- ================= AI ASSISTANT OVERLAY PANEL ================= -->
+  <div id="ai-panel" class="fixed right-5 bottom-20 z-40 w-80 glass-panel p-5 rounded-2xl shadow-2xl border border-indigo-500/20 flex flex-col justify-between hidden h-[380px]">
+    <div>
+      <div class="flex justify-between items-center mb-3">
+        <h4 class="font-bold font-heading text-sm text-indigo-400 flex items-center gap-1.5">🤖 AI Workspace Assistant</h4>
+        <button onclick="toggleAIPanel()" class="text-slate-400 hover:text-slate-200">&times;</button>
+      </div>
+      <div id="ai-chat-box" class="h-60 overflow-y-auto p-2 bg-slate-950/20 rounded-lg text-xs space-y-2.5">
+        <div class="text-slate-400">Welcome! Ask details like "Show pending fees", "Find class 9 students", or "Generate attendance report".</div>
+      </div>
+    </div>
+    <div class="flex gap-1.5 mt-2">
+      <input type="text" id="ai-chat-input" onkeydown="if(event.key==='Enter') sendAIQuery()" class="flex-1 glass-input px-3 py-2 rounded-xl text-xs" placeholder="Ask school query...">
+      <button onclick="sendAIQuery()" class="px-3 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs text-white">Ask</button>
+    </div>
+  </div>
+  <!-- Scripts -->
+  <script src=db.js"></script>
+  <script src="auth.js"></script>
+  <script src="ui.js"></script>
+  <script src="ai.js"></script>
+    // Validate session
+    const currentUser = window.SchoolAuth.requireUser(['parent']);
+    // Sidebar toggles
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('w-[260px]');
+      sidebar.classList.toggle('w-16');
+      document.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden'));
+    }
+    // Load Children in drop-down selector
+    function initChildrenSelector() {
+      const db = window.SchoolDB.get();
+      const selector = document.getElementById('child-selector');
+      selector.innerHTML = '';
+      // Find children linked to parent id
+      const children = db.students.filter(s => s.parentId === currentUser.id);
+      children.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.innerText = c.name;
+        selector.appendChild(opt);
+      });
+      loadChildRecords();
+    }
+    // Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('#content-views > section').forEach(sect => sect.classList.add('hidden'));
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav-link'));
+      event.currentTarget.classList.add('active-nav-link');
+      const titles = {
+        children: 'Child Profile Card',
+        performance: 'Academic Performance & Grades',
+        fees: 'Dues & Account Invoices',
+        communication: 'Direct Parent-Teacher Messages',
+        complaints: 'Complaint Resolution Center'
+      };
+      document.getElementById('page-title').innerText = titles[tabId] || 'Workspace';
+      if (tabId === 'communication') {
+        loadTeachersList();
+      } else if (tabId === 'complaints') {
+        loadComplaintsList();
+      }
+    }
+    // Load Child records
+    function loadChildRecords() {
+      const db = window.SchoolDB.get();
+      const childId = document.getElementById('child-selector').value;
+      if (!childId) return;
+      const s = db.students.find(x => x.id === childId);
+      if (!s) return;
+      // Update Profile elements
+      document.getElementById('child-photo').src = s.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+      document.getElementById('child-id').innerText = s.id;
+      document.getElementById('child-class').innerText = s.class;
+      document.getElementById('child-roll').innerText = s.rollNumber;
+      document.getElementById('child-cnic').innerText = s.cnicFormB;
+      document.getElementById('child-blood').innerText = s.bloodGroup;
+      document.getElementById('child-house').innerText = s.house;
+      document.getElementById('child-address').innerText = s.address;
+      // ID Card details
+      document.getElementById('id-card-name').innerText = s.name;
+      document.getElementById('id-card-class').innerText = `${s.class} (${s.section})`;
+      window.SchoolUI.generateQRCodeCanvas(document.getElementById('qr-canvas'), s.id);
+      // Grades and Performance
+      const gradesTbody = document.getElementById('grades-table-body');
+      gradesTbody.innerHTML = '';
+      const subjects = ['Mathematics', 'Physics', 'Chemistry', 'English', 'Biology'];
+      
+      let sum = 0, count = 0;
+      subjects.forEach(sub => {
+        const mid = (s.grades.midTerm && s.grades.midTerm[sub] !== undefined) ? s.grades.midTerm[sub] : '--';
+        const final = (s.grades.finalExam && s.grades.finalExam[sub] !== undefined) ? s.grades.finalExam[sub] : '--';
+        if (final !== '--') { sum += final; count++; }
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-200 dark:border-slate-800';
+        tr.innerHTML = `
+          <td class="p-3 font-semibold">${sub}</td>
+          <td class="p-3 text-center font-bold text-slate-500">${mid}</td>
+          <td class="p-3 text-center font-bold text-indigo-400">${final}</td>
+        `;
+        gradesTbody.appendChild(tr);
+      });
+      // GPA calculator
+      const avg = count > 0 ? sum / count : 0;
+      let gpa = 'F';
+      if (avg >= 90) gpa = 'A+ (4.0)';
+      else if (avg >= 80) gpa = 'A (3.7)';
+      else if (avg >= 70) gpa = 'B (3.0)';
+      else if (avg >= 60) gpa = 'C (2.0)';
+      else if (avg > 0) gpa = 'D (1.0)';
+      else gpa = 'Pending';
+      document.getElementById('performance-gpa').innerText = gpa;
+      // Attendance records
+      const attnContainer = document.getElementById('attendance-log-container');
+      attnContainer.innerHTML = '';
+      s.attendance.slice().reverse().forEach(a => {
+        const statusColors = {
+          Present: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+          Absent: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+          Leave: 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+        };
+        const color = statusColors[a.status] || 'bg-slate-500/10';
+        const item = document.createElement('div');
+        item.className = 'flex justify-between items-center text-xs p-2.5 bg-slate-100/50 dark:bg-slate-800/20 rounded-lg border border-slate-200 dark:border-slate-800';
+        item.innerHTML = `
+          <span class="font-mono text-slate-500">${a.date}</span>
+          <span class="px-2.5 py-0.5 rounded font-bold border ${color}">${a.status}</span>
+        `;
+        attnContainer.appendChild(item);
+      });
+      // Dues Invoices
+      const feesTbody = document.getElementById('fees-table-body');
+      feesTbody.innerHTML = '';
+      const slips = db.feeSlips.filter(f => f.studentId === s.id);
+      slips.forEach(f => {
+        const isPaid = f.status === 'Paid';
+        const statusBadge = isPaid 
+          ? `<span class="px-2.5 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs">Paid</span>` 
+          : `<span class="px-2.5 py-0.5 rounded font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs">Unpaid</span>`;
+        
+        const actionBtn = isPaid
+          ? `<button onclick="downloadReceipt('${f.invoiceId}')" class="text-indigo-400 hover:underline">Receipt</button>`
+          : `<button onclick="initiatePayment('${f.invoiceId}')" class="px-3 py-1 bg-indigo-500 hover:bg-indigo-600 text-white rounded text-xs font-semibold">Pay Now</button>`;
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-200 dark:border-slate-800';
+        tr.innerHTML = `
+          <td class="p-4 font-mono font-bold text-indigo-400">${f.invoiceId}</td>
+          <td class="p-4">${f.month}</td>
+          <td class="p-4 font-bold">PKR ${f.totalAmount.toLocaleString()}</td>
+          <td class="p-4 text-center">${statusBadge}</td>
+          <td class="p-4">${actionBtn}</td>
+        `;
+        feesTbody.appendChild(tr);
+      });
+    }
+    // ================= DUES PAYMENTS INTERFACES =================
+    function downloadReceipt(invoiceId) {
+      window.location.href = `payment-gateway.html?invoice=${invoiceId}&receipt=1`;
+    }
+    function initiatePayment(invoiceId) {
+      window.location.href = `payment-gateway.html?invoice=${invoiceId}`;
+    }
+    // ================= COMMUNICATION (TEACHER) =================
+    function loadTeachersList() {
+      const db = window.SchoolDB.get();
+      const list = document.getElementById('teachers-list');
+      list.innerHTML = '';
+      const teachers = db.users.filter(u => u.role === 'teacher');
+      teachers.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'p-3 bg-slate-100/50 dark:bg-slate-900/30 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl cursor-pointer transition-colors';
+        item.onclick = () => selectTeacherChat(t.id, t.name);
+        item.innerHTML = `
+          <p class="font-bold text-xs">${t.name}</p>
+          <p class="text-[9px] text-slate-500">Subjects: ${t.subjects.join(', ')}</p>
+        `;
+        list.appendChild(item);
+      });
+    }
+    function selectTeacherChat(teacherId, teacherName) {
+      document.getElementById('chat-receiver-id').value = teacherId;
+      document.getElementById('chat-header').innerText = `Chatting with: ${teacherName}`;
+      renderMessagesHistory(teacherId);
+    }
+    function renderMessagesHistory(teacherId) {
+      const db = window.SchoolDB.get();
+      const chatBox = document.getElementById('chat-box');
+      chatBox.innerHTML = '';
+      const dialogue = db.messages.filter(m => 
+        (m.senderId === currentUser.id && m.receiverId === teacherId) ||
+        (m.senderId === teacherId && m.receiverId === currentUser.id)
+      ).sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+      if (dialogue.length === 0) {
+        chatBox.innerHTML = '<div class="text-center text-slate-400 p-4">No message history. Write a message below to start chatting.</div>';
+        return;
+      }
+      dialogue.forEach(m => {
+        const isMe = m.senderId === currentUser.id;
+        const msg = document.createElement('div');
+        msg.className = `flex flex-col max-w-[80%] p-2.5 rounded-xl text-xs leading-relaxed ${
+          isMe ? 'bg-indigo-500 text-white self-end ml-auto' : 'bg-slate-100/80 dark:bg-slate-800 text-slate-800 dark:text-slate-100'
+        }`;
+        msg.innerHTML = `
+          <p>${m.content}</p>
+          <span class="text-[8px] opacity-75 text-right mt-1">${new Date(m.timestamp).toLocaleTimeString()}</span>
+        `;
+        chatBox.appendChild(msg);
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    function sendMessage() {
+      const receiverId = document.getElementById('chat-receiver-id').value;
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!receiverId) {
+        alert('Please select a teacher contact first.');
+        return;
+      }
+      if (!text) return;
+      const db = window.SchoolDB.get();
+      const newMsg = {
+        id: db.messages.length + 1,
+        senderId: currentUser.id,
+        receiverId: receiverId,
+        content: text,
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+      db.messages.push(newMsg);
+      window.SchoolDB.save(db);
+      
+      input.value = '';
+      renderMessagesHistory(receiverId);
+    }
+    // ================= COMPLAINTS SUBMISSIONS =================
+    function loadComplaintsList() {
+      const db = window.SchoolDB.get();
+      const container = document.getElementById('complaints-list');
+      container.innerHTML = '';
+      const tickets = db.complaints.filter(c => c.parentId === currentUser.id);
+      if (tickets.length === 0) {
+        container.innerHTML = '<p class="text-center text-slate-400 py-6 text-xs">No submitted complaint tickets found.</p>';
+        return;
+      }
+      tickets.forEach(c => {
+        const statusColors = {
+          Open: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
+          Resolved: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+        };
+        const color = statusColors[c.status] || 'bg-slate-800';
+        const item = document.createElement('div');
+        item.className = 'p-3 bg-slate-100/50 dark:bg-slate-800/20 rounded-xl border border-slate-200 dark:border-slate-800 flex justify-between items-start text-xs';
+        item.innerHTML = `
+          <div>
+            <h5 class="font-bold text-slate-800 dark:text-slate-100">${c.subject}</h5>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">${c.details}</p>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${color}">${c.status}</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+    function handleComplaintSubmit(e) {
+      e.preventDefault();
+      const db = window.SchoolDB.get();
+      
+      const nextId = 'CMP' + (100 + db.complaints.length + 1);
+      const ticket = {
+        id: nextId,
+        studentId: document.getElementById('child-selector').value,
+        subject: document.getElementById('complaint-subject').value,
+        details: document.getElementById('complaint-details').value,
+        status: 'Open',
+        parentId: currentUser.id,
+        replies: []
+      };
+      db.complaints.push(ticket);
+      window.SchoolDB.save(db);
+      window.SchoolUI.showToast('Complaint ticket logged and dispatched to Admin.');
+      e.target.reset();
+      loadComplaintsList();
+    }
+    // ================= AI ASSISTANT CONSOLE =================
+    function toggleAIPanel() {
+      document.getElementById('ai-panel').classList.toggle('hidden');
+    }
+    function sendAIQuery() {
+      const input = document.getElementById('ai-chat-input');
+      const query = input.value.trim();
+      if (!query) return;
+      const chatBox = document.getElementById('ai-chat-box');
+      chatBox.innerHTML += `<div class="text-right text-indigo-400 font-bold mt-2">You: ${query}</div>`;
+      
+      const answer = window.SchoolUI.parseAICommand(query);
+      chatBox.innerHTML += `<div class="text-left text-slate-300 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800 mt-1.5">🤖: ${answer}</div>`;
+      
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('user-name').innerText = currentUser.name;
+      initChildrenSelector();
+    });
+  </script>
+</body>
+</html
