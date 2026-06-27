@@ -44,9 +44,7 @@
         <button onclick="switchTab('announcements')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
           <span>📢</span> <span class="sidebar-text">Class Announcements</span>
         </button>
-        <button onclick="switchTab('leaves')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <span>📝</span> <span class="sidebar-text">Leave Requests</span>
-        </button>
+       
         <button onclick="switchTab('messages')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
           <span>💬</span> <span class="sidebar-text">Parent Messaging</span>
         </button>
@@ -229,47 +227,7 @@
           </div>
         </div>
       </section>
-      <!-- ================= LEAVE REQUESTS VIEW ================= -->
-      <section id="view-leaves" class="space-y-6 hidden animate-fade-in">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 h-fit">
-            <h4 class="font-bold text-sm mb-4 font-heading border-b border-slate-200 dark:border-slate-800 pb-2">Submit Leave Application</h4>
-            <form onsubmit="handleLeaveSubmit(event)" class="space-y-4 text-xs">
-              <div>
-                <label class="block text-slate-400 mb-1">Start Date</label>
-                <input type="date" id="leave-start" required class="w-full glass-input px-3 py-2 rounded-lg">
-              </div>
-              <div>
-                <label class="block text-slate-400 mb-1">End Date</label>
-                <input type="date" id="leave-end" required class="w-full glass-input px-3 py-2 rounded-lg">
-              </div>
-              <div>
-                <label class="block text-slate-400 mb-1">Reason for Leave</label>
-                <textarea id="leave-reason" required rows="3" class="w-full glass-input px-3 py-2 rounded-lg" placeholder="Description..."></textarea>
-              </div>
-              <button type="submit" class="w-full py-2.5 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600">Disperse Application</button>
-            </form>
-          </div>
-          
-          <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 md:col-span-2">
-            <h4 class="font-bold text-sm mb-4 font-heading border-b border-slate-200 dark:border-slate-800 pb-2">My Leave Requests Status</h4>
-            <table class="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-                  <th class="p-3 font-semibold text-slate-500">Period Dates</th>
-                  <th class="p-3 font-semibold text-slate-500">Reason</th>
-                  <th class="p-3 font-semibold text-slate-500 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody id="leaves-table-body">
-                <!-- Loaded dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </div>
-  </main>
+     
   <!-- ================= AI ASSISTANT OVERLAY PANEL ================= -->
   <div id="ai-panel" class="fixed right-5 bottom-20 z-40 w-80 glass-panel p-5 rounded-2xl shadow-2xl border border-indigo-500/20 flex flex-col justify-between hidden h-[380px]">
     <div>
