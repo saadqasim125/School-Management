@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanguard ERP - Student Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 dark-theme:bg-slate-950 dark-theme:text-slate-100 flex min-h-screen relative">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="glass-panel w-[260px] flex-shrink-0 flex flex-col justify-between border-r border-slate-200 dark:border-slate-800 transition-all duration-300 z-30">
+    <div>
+      <div class="p-6 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-500 flex items-center justify-center font-bold text-white">V</div>
+        <div class="sidebar-text">
+          <h1 class="text-sm font-extrabold tracking-wider bg-gradient-to-r from-indigo-500 to-emerald-500 bg-clip-text text-transparent">VANGUARD</h1>
+          <p class="text-[9px] uppercase tracking-widest text-slate-500">Student Workspace</p>
+        </div>
+      </div>
+      <nav class="p-4 space-y-1.5">
+        <button onclick="switchTab('profile')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 active-nav-link text-slate-700 dark:text-slate-300">
+          <span>🎒</span> <span class="sidebar-text">My Profile</span>
+        </button>
+        <button onclick="switchTab('academics')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>📈</span> <span class="sidebar-text">Grades & GPA</span>
+        </button>
+        <button onclick="switchTab('billing')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>💳</span> <span class="sidebar-text">Fees & Invoices</span>
+        </button>
+        <button onclick="switchTab('timetable')" class="nav-link w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span>📅</span> <span class="sidebar-text">Class Schedule</span>
+        </button>
+      </nav>
+    </div>
+    <!-- Student Avatar footer -->
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-3 p-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/30">
+        <img id="user-avatar" class="w-9 h-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Profile">
+        <div class="sidebar-text flex-1 min-w-0">
+          <p id="user-name" class="text-xs font-bold truncate">Loading...</p>
+          <p class="text-[9px] uppercase tracking-wider text-slate-500">Student Account</p>
+        </div>
+        <button onclick="window.SchoolAuth.logout()" class="text-slate-400 hover:text-rose-500 text-sm">🚪</button>
+      </div>
+    </div>
+  </aside>
+  <!-- Workspace Main Content -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    <header class="glass-panel h-16 px-6 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 z-20">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()" class="text-lg p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">☰</button>
+        <h2 id="page-title" class="font-extrabold text-lg font-heading tracking-tight">My Profile Card</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <button onclick="toggleAIPanel()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20">🤖 Ask AI</button>
+        <button onclick="window.SchoolUI.toggleTheme()" class="theme-toggle-btn w-9 h-9 rounded-lg glass-panel flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 text-lg">☀️</button>
+      </div>
+    </header>
+    <div id="content-views" class="p-6 space-y-6">
+      <!-- ================= PROFILE VIEW ================= -->
+      <section id="view-profile" class="space-y-6 animate-fade-in">
+        <div class="glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row gap-6 items-center">
+          <img id="stud-photo" class="w-32 h-32 rounded-2xl object-cover border-2 border-indigo-500 shadow-lg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150">
+          <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Student ID</p>
+              <p id="stud-id" class="font-mono font-bold text-indigo-400 text-sm">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Academic Class</p>
+              <p id="stud-class" class="font-bold text-sm">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Roll Number</p>
+              <p id="stud-roll" class="font-bold text-sm">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Form B / CNIC</p>
+              <p id="stud-cnic" class="font-semibold">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">Blood Group</p>
+              <p id="stud-blood" class="font-bold">--</p>
+            </div>
+            <div>
+              <p class="text-slate-400 font-semibold mb-0.5">House Group</p>
+              <p id="stud-house" class="font-bold text-indigo-400">--</p>
+            </div>
+            <div class="sm:col-span-2">
+              <p class="text-slate-400 font-semibold mb-0.5">Address</p>
+              <p id="stud-address" class="text-slate-600 dark:text-slate-300">--</p>
+            </div>
+          </div>
+        </div>
+        <!-- ID Badge Preview -->
+        <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-sm mx-auto text-center relative overflow-hidden id-card-glow text-white">
+          <h4 class="font-bold text-sm font-heading mb-4 tracking-wider">VANGUARD STUDENT ID BADGE</h4>
+          <div class="flex justify-center mb-4">
+            <canvas id="qr-canvas" width="120" height="120" class="rounded bg-white p-2 border border-indigo-500/40"></canvas>
+          </div>
+          <p id="id-card-name" class="font-bold text-base tracking-wide">--</p>
+          <p id="id-card-class" class="text-[10px] text-indigo-200 mt-0.5 uppercase tracking-widest font-semibold">--</p>
+          <div class="mt-4 pt-3 border-t border-white/10 flex justify-between text-[9px] text-slate-300">
+            <span>Issue Date: 2026-06-27</span>
+            <span>Validity: Academic Term</span>
+          </div>
+        </div>
+      </section>
+      <!-- ================= ACADEMICS VIEW ================= -->
+      <section id="view-academics" class="space-y-6 hidden animate-fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="glass-panel p-5 rounded-2xl md:col-span-2 border border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-sm mb-4 font-heading text-indigo-400">Term Grades</h4>
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                  <th class="p-3 font-semibold text-slate-500">Subject</th>
+                  <th class="p-3 font-semibold text-slate-500 text-center">Mid Term</th>
+                  <th class="p-3 font-semibold text-slate-500 text-center">Final Exam</th>
+                </tr>
+              </thead>
+              <tbody id="grades-table-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between text-xs font-semibold">
+              <span>Calculated CGPA: <span id="performance-gpa" class="text-indigo-400">--</span></span>
+            </div>
+          </div>
+          <div class="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <h4 class="font-bold text-sm mb-4 font-heading text-indigo-400">My Attendance</h4>
+            <div id="attendance-log-container" class="space-y-2 overflow-y-auto max-h-[220px]">
+              <!-- Loaded Dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= FEES VIEW ================= -->
+      <section id="view-billing" class="space-y-6 hidden animate-fade-in">
+        <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                <th class="p-4 font-semibold text-slate-500">Invoice ID</th>
+                <th class="p-4 font-semibold text-slate-500">Statement Month</th>
+                <th class="p-4 font-semibold text-slate-500">Billing Amount</th>
+                <th class="p-4 font-semibold text-slate-500 text-center">Payment Status</th>
+                <th class="p-4 font-semibold text-slate-500">Action</th>
+              </tr>
+            </thead>
+            <tbody id="fees-table-body">
+              <!-- Loaded Dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <!-- ================= TIMETABLE VIEW ================= -->
+      <section id="view-timetable" class="space-y-6 hidden animate-fade-in">
+        <div class="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <h4 class="font-bold text-sm mb-4 font-heading text-indigo-400">Weekly Schedule Planner</h4>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-xs">
+            <div class="bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl space-y-2 border border-slate-200 dark:border-slate-800">
+              <p class="font-bold text-indigo-400 uppercase tracking-wider text-[10px]">Monday</p>
+              <p><strong>08:30 - 09:30</strong>: Mathematics</p>
+              <p><strong>09:30 - 10:30</strong>: Physics</p>
+            </div>
+            <div class="bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl space-y-2 border border-slate-200 dark:border-slate-800">
+              <p class="font-bold text-indigo-400 uppercase tracking-wider text-[10px]">Tuesday</p>
+              <p><strong>08:30 - 09:30</strong>: Chemistry</p>
+              <p><strong>09:30 - 10:30</strong>: English</p>
+            </div>
+            <div class="bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl space-y-2 border border-slate-200 dark:border-slate-800">
+              <p class="font-bold text-indigo-400 uppercase tracking-wider text-[10px]">Wednesday</p>
+              <p><strong>08:30 - 09:30</strong>: Mathematics</p>
+              <p><strong>09:30 - 10:30</strong>: Biology</p>
+            </div>
+            <div class="bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl space-y-2 border border-slate-200 dark:border-slate-800">
+              <p class="font-bold text-indigo-400 uppercase tracking-wider text-[10px]">Thursday</p>
+              <p><strong>08:30 - 09:30</strong>: Physics</p>
+              <p><strong>09:30 - 10:30</strong>: Chemistry</p>
+            </div>
+            <div class="bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl space-y-2 border border-slate-200 dark:border-slate-800">
+              <p class="font-bold text-indigo-400 uppercase tracking-wider text-[10px]">Friday</p>
+              <p><strong>08:30 - 09:30</strong>: English</p>
+              <p><strong>09:30 - 10:30</strong>: Biology</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <!-- ================= AI ASSISTANT OVERLAY PANEL ================= -->
+  <div id="ai-panel" class="fixed right-5 bottom-20 z-40 w-80 glass-panel p-5 rounded-2xl shadow-2xl border border-indigo-500/20 flex flex-col justify-between hidden h-[380px]">
+    <div>
+      <div class="flex justify-between items-center mb-3">
+        <h4 class="font-bold font-heading text-sm text-indigo-400 flex items-center gap-1.5">🤖 AI Workspace Assistant</h4>
+        <button onclick="toggleAIPanel()" class="text-slate-400 hover:text-slate-200">&times;</button>
+      </div>
+      <div id="ai-chat-box" class="h-60 overflow-y-auto p-2 bg-slate-950/20 rounded-lg text-xs space-y-2.5">
+        <div class="text-slate-400">Welcome! Ask details like "Generate attendance report", or "Show pending fees".</div>
+      </div>
+    </div>
+    <div class="flex gap-1.5 mt-2">
+      <input type="text" id="ai-chat-input" onkeydown="if(event.key==='Enter') sendAIQuery()" class="flex-1 glass-input px-3 py-2 rounded-xl text-xs" placeholder="Ask school query...">
+      <button onclick="sendAIQuery()" class="px-3 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs text-white">Ask</button>
+    </div>
+  </div>
+  <!-- Scripts -->
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/ai.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    // Validate session
+    const currentUser = window.SchoolAuth.requireUser(['student']);
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('w-[260px]');
+      sidebar.classList.toggle('w-16');
+      document.querySelectorAll('.sidebar-text').forEach(t => t.classList.toggle('hidden'));
+    }
+    function switchTab(tabId) {
+      document.querySelectorAll('#content-views > section').forEach(sect => sect.classList.add('hidden'));
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav-link'));
+      event.currentTarget.classList.add('active-nav-link');
+      const titles = {
+        profile: 'My Profile Card',
+        academics: 'Academic Performance & Grades',
+        billing: 'Dues & Account Invoices',
+        timetable: 'Weekly Schedule Planner'
+      };
+      document.getElementById('page-title').innerText = titles[tabId] || 'Workspace';
+    }
+    // Load student records
+    function loadStudentDashboard() {
+      const db = window.SchoolDB.get();
+      const s = db.students.find(x => x.id === currentUser.id);
+      if (!s) return;
+      document.getElementById('user-name').innerText = s.name;
+      document.getElementById('user-avatar').src = s.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+      document.getElementById('stud-photo').src = s.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+      document.getElementById('stud-id').innerText = s.id;
+      document.getElementById('stud-class').innerText = s.class;
+      document.getElementById('stud-roll').innerText = s.rollNumber;
+      document.getElementById('stud-cnic').innerText = s.cnicFormB;
+      document.getElementById('stud-blood').innerText = s.bloodGroup;
+      document.getElementById('stud-house').innerText = s.house;
+      document.getElementById('stud-address').innerText = s.address;
+      document.getElementById('id-card-name').innerText = s.name;
+      document.getElementById('id-card-class').innerText = `${s.class} (${s.section})`;
+      window.SchoolUI.generateQRCodeCanvas(document.getElementById('qr-canvas'), s.id);
+      // Grades
+      const gradesTbody = document.getElementById('grades-table-body');
+      gradesTbody.innerHTML = '';
+      const subjects = ['Mathematics', 'Physics', 'Chemistry', 'English', 'Biology'];
+      
+      let sum = 0, count = 0;
+      subjects.forEach(sub => {
+        const mid = (s.grades.midTerm && s.grades.midTerm[sub] !== undefined) ? s.grades.midTerm[sub] : '--';
+        const final = (s.grades.finalExam && s.grades.finalExam[sub] !== undefined) ? s.grades.finalExam[sub] : '--';
+        if (final !== '--') { sum += final; count++; }
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-200 dark:border-slate-800';
+        tr.innerHTML = `
+          <td class="p-3 font-semibold">${sub}</td>
+          <td class="p-3 text-center font-bold text-slate-500">${mid}</td>
+          <td class="p-3 text-center font-bold text-indigo-400">${final}</td>
+        `;
+        gradesTbody.appendChild(tr);
+      });
+      const avg = count > 0 ? sum / count : 0;
+      let gpa = 'F';
+      if (avg >= 90) gpa = 'A+ (4.0)';
+      else if (avg >= 80) gpa = 'A (3.7)';
+      else if (avg >= 70) gpa = 'B (3.0)';
+      else if (avg >= 60) gpa = 'C (2.0)';
+      else if (avg > 0) gpa = 'D (1.0)';
+      else gpa = 'Pending';
+      document.getElementById('performance-gpa').innerText = gpa;
+      // Attendance
+      const attnContainer = document.getElementById('attendance-log-container');
+      attnContainer.innerHTML = '';
+      s.attendance.slice().reverse().forEach(a => {
+        const colors = {
+          Present: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
+          Absent: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
+          Leave: 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+        };
+        const col = colors[a.status] || 'bg-slate-500/10';
+        const item = document.createElement('div');
+        item.className = 'flex justify-between items-center text-xs p-2.5 bg-slate-100/50 dark:bg-slate-800/20 rounded-lg border border-slate-200 dark:border-slate-800';
+        item.innerHTML = `
+          <span class="font-mono text-slate-500">${a.date}</span>
+          <span class="px-2.5 py-0.5 rounded font-bold ${col}">${a.status}</span>
+        `;
+        attnContainer.appendChild(item);
+      });
+      // Fees
+      const feesTbody = document.getElementById('fees-table-body');
+      feesTbody.innerHTML = '';
+      const slips = db.feeSlips.filter(f => f.studentId === s.id);
+      slips.forEach(f => {
+        const isPaid = f.status === 'Paid';
+        const statusBadge = isPaid 
+          ? `<span class="px-2.5 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs">Paid</span>` 
+          : `<span class="px-2.5 py-0.5 rounded font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs">Unpaid</span>`;
+        
+        const actionBtn = isPaid
+          ? `<button onclick="downloadReceipt('${f.invoiceId}')" class="text-indigo-400 hover:underline">Receipt</button>`
+          : `<button onclick="initiatePayment('${f.invoiceId}')" class="px-3 py-1 bg-indigo-500 hover:bg-indigo-600 text-white rounded text-xs font-semibold">Pay Now</button>`;
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-200 dark:border-slate-800';
+        tr.innerHTML = `
+          <td class="p-4 font-mono font-bold text-indigo-400">${f.invoiceId}</td>
+          <td class="p-4">${f.month}</td>
+          <td class="p-4 font-bold">PKR ${f.totalAmount.toLocaleString()}</td>
+          <td class="p-4 text-center">${statusBadge}</td>
+          <td class="p-4">${actionBtn}</td>
+        `;
+        feesTbody.appendChild(tr);
+      });
+    }
+    function downloadReceipt(invoiceId) {
+      window.location.href = `payment-gateway.html?invoice=${invoiceId}&receipt=1`;
+    }
+    function initiatePayment(invoiceId) {
+      window.location.href = `payment-gateway.html?invoice=${invoiceId}`;
+    }
+    function toggleAIPanel() {
+      document.getElementById('ai-panel').classList.toggle('hidden');
+    }
+    function sendAIQuery() {
+      const input = document.getElementById('ai-chat-input');
+      const query = input.value.trim();
+      if (!query) return;
+      const chatBox = document.getElementById('ai-chat-box');
+      chatBox.innerHTML += `<div class="text-right text-indigo-400 font-bold mt-2">You: ${query}</div>`;
+      
+      const answer = window.SchoolUI.parseAICommand(query);
+      chatBox.innerHTML += `<div class="text-left text-slate-300 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800 mt-1.5">🤖: ${answer}</div>`;
+      
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStudentDashboard();
+    });
+  </script>
+</body>
+</html>
