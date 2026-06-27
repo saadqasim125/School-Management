@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard Enterprise ERP - Gateway</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["Plus Jakarta Sans", "sans-serif"],
+                        heading: ["Outfit", "sans-serif"]
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="min-h-screen bg-slate-950 flex flex-col justify-between text-slate-100 selection:bg-indigo-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Background Glow -->
+    <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none"></div>
+
+    <!-- Header -->
+    <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-10">
+
+        <div class="flex items-center gap-3">
+
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center font-bold shadow-lg">
+                V
+            </div>
+
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                    VANGUARD
+                </h1>
+
+                <p class="text-[10px] uppercase tracking-widest text-slate-400">
+                    Enterprise School ERP
+                </p>
+            </div>
+
+        </div>
+
+        <div class="flex items-center gap-4">
+
+            <span class="hidden sm:block text-xs text-slate-400">
+                System Status :
+                <span class="text-emerald-400 font-bold">
+                    ● Operational
+                </span>
+            </span>
+
+            <button
+                onclick="window.SchoolUI && SchoolUI.toggleTheme()"
+                class="theme-toggle-btn w-9 h-9 rounded-lg glass-panel flex items-center justify-center hover:bg-slate-800 transition"
+            >
+                ☀️
+            </button>
+
+        </div>
+
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-12 relative z-10">
+
+        <!-- Hero -->
+
+        <div class="text-center max-w-3xl mx-auto">
+
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 uppercase tracking-wider">
+                Next Generation School Management
+            </span>
+
+            <h2 class="mt-5 text-4xl sm:text-5xl font-extrabold font-heading">
+                Enterprise Portal Gateway
+            </h2>
+
+            <p class="mt-4 text-slate-400 leading-relaxed">
+                Select your portal below to access dashboards,
+                analytics, communication, finance,
+                attendance, examination records and school operations.
+            </p>
+
+        </div>
+
+        <!-- Portal Grid -->
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-14">
+
+            <!-- Admin -->
+
+            <div onclick="openLoginModal('admin')"
+                 class="glass-card rounded-2xl p-5 cursor-pointer group relative overflow-hidden">
+
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-cyan-500"></div>
+
+                <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition">
+                    🔑
+                </div>
+
+                <h3 class="font-heading text-lg font-bold">
+                    Admin Portal
+                </h3>
+
+                <p class="text-xs text-slate-400 mt-2 mb-6">
+                    Manage users, teachers, students,
+                    classes, fees, notices,
+                    reports and complete ERP settings.
+                </p>
+
+                <div class="flex justify-between items-center text-indigo-400 text-sm font-semibold">
+                    <span>Access Portal</span>
+                    <span>→</span>
+                </div>
+
+            </div>
+
+            <!-- Teacher -->
+
+            <div onclick="openLoginModal('teacher')"
+                 class="glass-card rounded-2xl p-5 cursor-pointer group relative overflow-hidden">
+
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-emerald-500"></div>
+
+                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition">
+                    👨‍🏫
+                </div>
+
+                <h3 class="font-heading text-lg font-bold">
+                    Teacher Portal
+                </h3>
+
+                <p class="text-xs text-slate-400 mt-2 mb-6">
+                    Attendance, exams,
+                    homework, marks,
+                    student performance,
+                    messaging and timetable.
+                </p>
+
+                <div class="flex justify-between items-center text-cyan-400 text-sm font-semibold">
+                    <span>Access Portal</span>
+                    <span>→</span>
+                </div>
+
+            </div>
+                        <!-- Parent Portal -->
+            <div onclick="openLoginModal('parent')"
+                 class="glass-card rounded-2xl p-5 cursor-pointer group relative overflow-hidden">
+
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-amber-500"></div>
+
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition">
+                    👪
+                </div>
+
+                <h3 class="font-heading text-lg font-bold">
+                    Parent Portal
+                </h3>
+
+                <p class="text-xs text-slate-400 mt-2 mb-6">
+                    View attendance, report cards,
+                    fee statements, notices,
+                    homework and communicate with teachers.
+                </p>
+
+                <div class="flex justify-between items-center text-emerald-400 text-sm font-semibold">
+                    <span>Access Portal</span>
+                    <span>→</span>
+                </div>
+
+            </div>
+
+            <!-- Student Portal -->
+
+            <div onclick="openLoginModal('student')"
+                 class="glass-card rounded-2xl p-5 cursor-pointer group relative overflow-hidden">
+
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-emerald-500"></div>
+
+                <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition">
+                    🎓
+                </div>
+
+                <h3 class="font-heading text-lg font-bold">
+                    Student Portal
+                </h3>
+
+                <p class="text-xs text-slate-400 mt-2 mb-6">
+                    Check attendance,
+                    class timetable,
+                    homework,
+                    exam results,
+                    notices and fee balance.
+                </p>
+
+                <div class="flex justify-between items-center text-indigo-400 text-sm font-semibold">
+                    <span>Access Portal</span>
+                    <span>→</span>
+                </div>
+
+            </div>
+
+            <!-- Accounts Portal -->
+
+            <div onclick="openLoginModal('accounts')"
+                 class="glass-card rounded-2xl p-5 cursor-pointer group relative overflow-hidden">
+
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-indigo-500"></div>
+
+                <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition">
+                    💼
+                </div>
+
+                <h3 class="font-heading text-lg font-bold">
+                    Accounts Portal
+                </h3>
+
+                <p class="text-xs text-slate-400 mt-2 mb-6">
+                    Manage school fees,
+                    salaries,
+                    expenses,
+                    invoices,
+                    reports and financial records.
+                </p>
+
+                <div class="flex justify-between items-center text-amber-400 text-sm font-semibold">
+                    <span>Access Portal</span>
+                    <span>→</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Notice Board -->
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
+
+            <div class="glass-panel rounded-2xl p-6 lg:col-span-2">
+
+                <div class="flex justify-between items-center mb-4">
+
+                    <h3 class="font-heading font-bold text-lg">
+                        📢 Active Notices
+                    </h3>
+
+                    <span class="text-xs text-slate-400 hover:underline cursor-pointer">
+                        View All
+                    </span>
+
+                </div>
+
+                <div id="landing-notices"
+                     class="space-y-3 max-h-60 overflow-y-auto">
+                </div>
+
+            </div>
+
+            <div class="glass-panel rounded-2xl p-6">
+
+                <h3 class="font-heading font-bold text-lg mb-4">
+                    🕒 Portal Activity
+                </h3>
+
+                <div id="landing-logs"
+                     class="space-y-3 text-xs max-h-44 overflow-y-auto">
+                </div>
+
+                <div class="border-t border-slate-800 mt-4 pt-3 text-xs text-slate-400 flex justify-between">
+                    <span>
+                        Local Time:
+                        <span id="clock"></span>
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+    <!-- Login Modal -->
+<div id="login-modal"
+     class="fixed inset-0 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm z-50 opacity-0 transition-opacity duration-300">
+
+    <div class="glass-panel w-full max-w-md rounded-3xl p-8 mx-4 border border-slate-800 relative shadow-2xl transform scale-95 transition-transform duration-300">
+
+        <button
+            onclick="closeLoginModal()"
+            class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-white">
+            &times;
+        </button>
+
+        <div class="text-center mb-6">
+
+            <h2 id="modal-title"
+                class="text-2xl font-bold font-heading bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                Portal Login
+            </h2>
+
+            <p class="text-xs text-slate-400 mt-2">
+                Enter your credentials to continue.
+            </p>
+
+        </div>
+
+        <!-- Demo Credentials -->
+
+        <div
+            class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-4 mb-5">
+
+            <p class="text-xs font-semibold text-indigo-400 mb-2">
+                Demo Credentials
+            </p>
+
+            <ul id="demo-hints"
+                class="text-xs text-slate-300 space-y-1 list-disc pl-5">
+            </ul>
+
+        </div>
+
+        <!-- Login Form -->
+
+        <form id="login-form"
+              class="space-y-4"
+              onsubmit="handleLoginSubmit(event)">
+
+            <input
+                type="hidden"
+                id="login-role">
+
+            <div>
+
+                <label
+                    class="block text-xs mb-2 text-slate-300">
+                    Email / ID / Phone
+                </label>
+
+                <input
+                    id="login-identifier"
+                    type="text"
+                    required
+                    class="glass-input w-full rounded-xl px-4 py-3 text-sm"
+                    placeholder="Enter email or ID">
+
+            </div>
+
+            <div>
+
+                <label
+                    class="block text-xs mb-2 text-slate-300">
+                    Password
+                </label>
+
+                <div class="relative">
+
+                    <input
+                        id="login-password"
+                        type="password"
+                        required
+                        class="glass-input w-full rounded-xl px-4 py-3 pr-10 text-sm"
+                        placeholder="••••••••">
+
+                    <button
+                        type="button"
+                        onclick="togglePasswordVisibility()"
+                        class="absolute right-3 top-3">
+
+                        👁️
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="flex justify-between items-center text-xs">
+
+                <label class="flex items-center gap-2">
+
+                    <input
+                        id="login-remember"
+                        type="checkbox">
+
+                    Remember Me
+
+                </label>
+
+                <button
+                    type="button"
+                    onclick="triggerForgotPassword()"
+                    class="text-indigo-400 hover:underline">
+
+                    Forgot Password?
+
+                </button>
+
+            </div>
+
+            <button
+                type="submit"
+                class="w-full rounded-xl py-3 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-semibold hover:from-indigo-600 hover:to-cyan-600">
+
+                Verify & Sign In
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Footer -->
+
+<footer
+class="w-full max-w-7xl mx-auto px-6 py-6 border-t border-slate-900 text-center text-xs text-slate-500">
+
+© 2026 Vanguard Enterprise ERP.
+Powered by Vanguard Systems.
+
+</footer>
+
+<script src="assets/js/db.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/ai.js"></script>
+<script src="assets/js/ui.js"></script>
+
+<script>
+  // ----------------------------
+// Render Notices & Login Logs
+// ----------------------------
+
+function renderFeeds() {
+
+    const db = window.SchoolDB.get();
+
+    const noticeContainer = document.getElementById("landing-notices");
+    noticeContainer.innerHTML = "";
+
+    db.notices.forEach(notice => {
+
+        const colors = {
+            General: "border-slate-700 bg-slate-800/20",
+            Holidays: "border-amber-700 bg-amber-900/10",
+            Exams: "border-cyan-700 bg-cyan-900/10",
+            Fees: "border-rose-700 bg-rose-900/10",
+            Emergency: "border-red-700 bg-red-900/20"
+        };
+
+        const item = document.createElement("div");
+
+        item.className =
+            `rounded-xl border p-4 ${colors[notice.category] || "border-slate-700"}`;
+
+        item.innerHTML = `
+            <div class="flex justify-between items-center">
+
+                <span class="text-xs font-bold uppercase text-slate-400">
+                    ${notice.category}
+                </span>
+
+                <span class="text-[10px] text-slate-500">
+                    ${notice.date}
+                </span>
+
+            </div>
+
+            <h4 class="font-semibold mt-2 text-slate-200">
+                ${notice.title}
+            </h4>
+
+            <p class="text-xs text-slate-400 mt-1">
+                ${notice.content}
+            </p>
+        `;
+
+        noticeContainer.appendChild(item);
+
+    });
+
+    const logContainer = document.getElementById("landing-logs");
+
+    logContainer.innerHTML = "";
+
+    db.loginHistory
+        .slice(0,5)
+        .forEach(log=>{
+
+            const div=document.createElement("div");
+
+            div.className="border-b border-slate-800 pb-2";
+
+            div.innerHTML=`
+
+                <p class="font-semibold text-slate-300">
+                    ${log.name}
+                    (${log.role})
+                </p>
+
+                <p class="text-[11px] text-slate-500">
+                    ${log.device}
+                </p>
+
+                <span class="text-[10px] text-slate-400">
+                    ${new Date(log.timestamp).toLocaleTimeString()}
+                </span>
+
+            `;
+
+            logContainer.appendChild(div);
+
+        });
+
+}
+
+// ----------------------------
+// Open Login Modal
+// ----------------------------
+
+function openLoginModal(role){
+
+    const modal=document.getElementById("login-modal");
+
+    document.getElementById("login-role").value=role;
+
+    document.getElementById("modal-title").innerText=
+        role.charAt(0).toUpperCase()+role.slice(1)+" Portal Login";
+
+    const hints=document.getElementById("demo-hints");
+
+    let html="";
+
+    switch(role){
+
+        case "admin":
+
+            html=`
+            <li>ID : ADM001</li>
+            <li>Email : admin@school.com</li>
+            <li>Password : admin</li>
+            `;
+
+        break;
+
+        case "teacher":
+
+            html=`
+            <li>ID : TEA101</li>
+            <li>Email : teacher1@school.com</li>
+            <li>Password : password</li>
+            `;
+
+        break;
+
+        case "student":
+
+            html=`
+            <li>ID : STD801</li>
+            <li>Email : aiden@school.com</li>
+            <li>Password : password</li>
+            `;
+
+        break;
+
+        case "parent":
+
+            html=`
+            <li>ID : PAR201</li>
+            <li>Email : parent1@school.com</li>
+            <li>Password : password</li>
+            `;
+
+        break;
+
+        case "accounts":
+
+            html=`
+            <li>ID : ACC301</li>
+            <li>Email : accounts@school.com</li>
+            <li>Password : password</li>
+            `;
+
+        break;
+
+    }
+
+    hints.innerHTML=html;
+
+    document.getElementById("login-form").reset();
+
+    modal.classList.remove("hidden");
+
+    modal.classList.add("flex");
+
+    setTimeout(()=>{
+
+        modal.classList.add("opacity-100");
+
+        modal.firstElementChild.classList.remove("scale-95");
+
+    },50);
+
+}
+function closeLoginModal() {
+
+    const modal = document.getElementById("login-modal");
+
+    modal.classList.remove("opacity-100");
+
+    modal.firstElementChild.classList.add("scale-95");
+
+    setTimeout(() => {
+
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+
+        // Clear the form every time
+        document.getElementById("login-form").reset();
+
+    }, 300);
+
+}
+
+// ----------------------------
+// Toggle Password
+// ----------------------------
+
+function togglePasswordVisibility() {
+
+    const input = document.getElementById("login-password");
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+    } else {
+
+        input.type = "password";
+
+    }
+
+}
+
+// ----------------------------
+// Forgot Password
+// ----------------------------
+
+function triggerForgotPassword() {
+
+    window.SchoolUI.showToast(
+        "Please contact the school administrator to reset your password.",
+        "info"
+    );
+
+}
+
+// ----------------------------
+// Login
+// ----------------------------
+
+function handleLoginSubmit(event) {
+
+    event.preventDefault();
+
+    const identifier =
+        document.getElementById("login-identifier").value.trim();
+
+    const password =
+        document.getElementById("login-password").value;
+
+    const remember =
+        document.getElementById("login-remember").checked;
+
+    const portal =
+        document.getElementById("login-role").value;
+
+    if (!identifier || !password) {
+
+        window.SchoolUI.showToast(
+            "Please enter all required fields.",
+            "danger"
+        );
+
+        return;
+
+    }
+
+    const result =
+        window.SchoolAuth.login(
+            identifier,
+            password,
+            remember
+        );
+
+    if (!result.success) {
+
+        window.SchoolUI.showToast(
+            result.message,
+            "danger"
+        );
+
+        return;
+
+    }
+
+    if (
+        result.user.role.toLowerCase() !==
+        portal.toLowerCase()
+    ) {
+
+        window.SchoolUI.showToast(
+
+            "This account belongs to the " +
+            result.user.role +
+            " portal.",
+
+            "warning"
+
+        );
+
+        return;
+
+    }
+
+    window.SchoolUI.showToast(
+
+        "Login Successful. Redirecting...",
+
+        "success"
+
+    );
+
+    setTimeout(() => {
+
+        window.location.href =
+            portal + ".html";
+
+    }, 900);
+
+}
+// ----------------------------
+// Live Clock
+// ----------------------------
+
+function updateClock() {
+
+    const clock = document.getElementById("clock");
+
+    if (!clock) return;
+
+    clock.textContent = new Date().toLocaleTimeString();
+
+}
+
+updateClock();
+
+setInterval(updateClock, 1000);
+
+// ----------------------------
+// Close Modal with ESC
+// ----------------------------
+
+document.addEventListener("keydown", function (e) {
+
+    if (e.key === "Escape") {
+
+        closeLoginModal();
+
+    }
+
+});
+
+// ----------------------------
+// Close Modal on Background Click
+// ----------------------------
+
+document.getElementById("login-modal").addEventListener("click", function (e) {
+
+    if (e.target === this) {
+
+        closeLoginModal();
+
+    }
+
+});
+
+// ----------------------------
+// Initialize Page
+// ----------------------------
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Auto-login if an active session exists
+    if (
+        window.SchoolAuth &&
+        typeof window.SchoolAuth.autoRedirectIfSessionActive === "function"
+    ) {
+        window.SchoolAuth.autoRedirectIfSessionActive();
+    }
+
+    // Load notices and activity logs
+    if (
+        window.SchoolDB &&
+        typeof window.SchoolDB.get === "function"
+    ) {
+        renderFeeds();
+    }
+
+    // Focus first input when modal opens
+    const modal = document.getElementById("login-modal");
+
+    const observer = new MutationObserver(() => {
+
+        if (!modal.classList.contains("hidden")) {
+
+            setTimeout(() => {
+
+                document.getElementById("login-identifier").focus();
+
+            }, 150);
+
+        }
+
+    });
+
+    observer.observe(modal, {
+        attributes: true,
+        attributeFilter: ["class"]
+    });
+
+});
+
+</script>
+
+</body>
+</html>
