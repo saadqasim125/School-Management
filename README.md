@@ -4,8 +4,8 @@ A modern, responsive, and feature-rich **School Management System** built using 
 
 ## 🌐 Live Demo
 
-https://school-management-page.netlify.app/admin.html
-
+[https://school-management-page.netlify.app/admin.html
+](https://saadqasim125.github.io/School-Management/)
 ---
 
 # 📖 Overview
